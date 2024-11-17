@@ -9,16 +9,17 @@ function sleep(ms: number) {
 
 const INTERPOLATION_MODES = ['rgb', 'hsl', 'hsv', 'hsi', 'lab', 'oklab', 'lch', 'oklch', 'hcl', 'lrgb'];
 
-program
+const command = program
 	.version(version, '-v, --version')
 	.option('-m, --mode <mode>', 'color interpolation mode (how colors are blended)', 'lrgb')
 	.option('-s, --step <number>', 'color increment step', 0.3 as any)
 	.option('-t, --stagger <number>', 'incremental horizontal offset on each line. offset = stagger * step', 1 as any)
 	.option('-r, --seed [seed]', 'RNG seed. no RNG by default, leave blank for random seed')
-	.option('-c, --stops <color...>')
+	.option('-c, --stops <color...>', 'colors to use for the gradient. can be any hex/css/html color. rainbow by default')
 	.option('-a, --animate', 'enable psychedelics')
 	.option('-p, --speed <number>', 'animation speed', 20.0 as any)
 	.option('-f, --force', 'force true RGB colors. only use when colors are not working correctly', false)
+	.option('-h, --help', 'display help menu for kekcat')
 	.parse();
 
 const opts = program.opts();
@@ -52,7 +53,23 @@ const colorize = getFrameColorizer({
 	forceTrueRGB,
 });
 
-if (animate) {
+if (opts.help) {
+	const helpText = command.helpInformation();
+	if (animate) {
+		(async () => {
+			while (true) {
+				process.stdout.write('\x1b[3J\x1b[2J\x1b[1J');
+				console.clear();
+				process.stdout.cursorTo(0);
+				process.stdout.write(colorize(helpText));
+				await sleep((1 / speed) * 500);
+			}
+		})();
+	} else {
+		process.stdout.write(colorize(helpText));
+		process.exit();
+	}
+} else if (animate) {
 	let frame = '';
 	process.stdin.on('data', (line: string) => frame += line + '\n');
 	process.stdin.on('close', async () => {
