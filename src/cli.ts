@@ -1,6 +1,7 @@
 import { program } from 'commander';
 import chroma, { type InterpolationMode } from 'chroma-js';
 import { getFrameColorizer, createStream } from './index';
+import { version } from './../package.json';
 
 function sleep(ms: number) {
 	return new Promise(resolve => setTimeout(resolve, ms));
@@ -9,7 +10,7 @@ function sleep(ms: number) {
 const INTERPOLATION_MODES = ['rgb', 'hsl', 'hsv', 'hsi', 'lab', 'oklab', 'lch', 'oklch', 'hcl', 'lrgb'];
 
 program
-	.version('1.0.0', '-v, --version')
+	.version(version, '-v, --version')
 	.option('-m, --mode <mode>', 'color interpolation mode (how colors are blended)', 'lrgb')
 	.option('-s, --step <number>', 'color increment step', 0.3 as any)
 	.option('-t, --stagger <number>', 'incremental horizontal offset on each line. offset = stagger * step', 1 as any)
