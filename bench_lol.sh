@@ -1,0 +1,1 @@
+seq 10000 | xargs -Iz cat test.txt | lolcat
